@@ -1,0 +1,36 @@
+name: JAVA CI - dev
+on:
+  push:
+    branches:
+      - "dev/**"
+jobs:
+  clone-down:
+    runs-on: ubuntu-latest
+    container: gradle:6-jdk11
+    steps:
+      - name: clone down
+        uses: actions/checkout@v3
+      - name: upload code
+        uses: actions/upload-artifact@v3
+        with: 
+          name: code
+          path: .
+  build:
+    runs-on: ubuntu-latest
+    container: gradle:6-jdk11
+    needs: clone-down
+    steps:
+      - name: download code
+        uses: actions/download-artifact@v3
+        with: 
+          name: code
+          path: .
+      - name: Build with Gradle
+        run: chmod +x ci/build-app.sh && ci/build-app.sh
+      - name: Test with Gradle
+        run: chmod +x ci/unit-test-app.sh && ci/unit-test-app.sh
+      - name: upload code
+        uses: actions/upload-artifact@v3
+        with: 
+          name: code
+          path: .
