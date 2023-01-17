@@ -33,6 +33,7 @@ jobs:
           path: .
   Component-test:
      runs-on: ubuntu-latest
+     needs: build
      steps:
      - name: Download code
        uses: actions/download-artifact@v3
